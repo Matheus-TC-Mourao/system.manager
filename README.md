@@ -9,7 +9,7 @@ A escolha do NestJS foi motivada por sua arquitetura modular, injeção de depen
 - **NestJS** (TypeScript): framework que promove organização de código e padrões de projeto.
 - **DynamoDB + Dynamoose**: armazenamento NoSQL na AWS com modelagem de esquemas simplificada.
 - **UUID**: geração de identificadores únicos para todos os registros, garantindo integridade e segurança.
-- **class-validator**: validação dos DTOs através de decoradores.
+- **class-validator**: validação dos DTOs **através** de decoradores.
 - **Princípios SOLID** e **Clean Code**: para manter o projeto escalável e de fácil evolução.
 
 ## Pré‑requisitos
@@ -78,7 +78,7 @@ Cada módulo possui suas entidades, DTOs, repositório, serviço e controller.
 | Método | Rota                                                     | Descrição                         | Exemplo Body                                                                        |
 | ------ | -------------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------- |
 | POST   | `/establishment-rules`                                   | Criar regras                      | `{ "establishmentId": "uuid-establishment", "picturesLimit": 10, "videoLimit": 5 }` |
-| GET    | `/establishment-rules/by-establishment/:establishmentId` | Buscar regras por estabelecimento | —                                                                                   |
+| GET    | `/establishment-rules/:establishmentId` | Buscar regras por estabelecimento | —                                                                                   |
 | PATCH    | `/establishment-rules/:id`                               | Atualizar regras                  | `{ "picturesLimit": 20 }`                                                           |
 | DELETE | `/establishment-rules/:id`                               | Remover regras                    | —                                                                                   |
 

@@ -1,33 +1,43 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { User } from './entities/user.entity';
+// import { UserModel } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRepository } from './user.repository';
-import { User } from './entities/user.entity';
+import { InjectModel } from 'nestjs-dynamoose';
+import { ModelType } from 'dynamoose/dist/General';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(@InjectModel('User') private userModel: ModelType<User>) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    return this.userRepository.create(createUserDto);
+  async create(user: CreateUserDto): Promise<User> {
+    const existing = await this.userModel.scan('email').eq(user.email).exec();
+    if (existing.count !== 0) {
+      throw new BadRequestException('Já existe usuário com esse email!');
+    }
+    return this.userModel.create(user);
   }
 
-  findAll(): Promise<User[]> {
-    return this.userRepository.findAll();
+  async findAll(): Promise<User[]> {
+    return this.userModel.scan().exec();
   }
 
   async findOne(id: string): Promise<User> {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.userModel.get(id);
     if (!user) throw new NotFoundException(`User ${id} não encontrado`);
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    await this.userRepository.findOne(id);
-    return this.userRepository.update(id, updateUserDto);
+  async update(id: string, user: UpdateUserDto): Promise<User> {
+    await this.findOne(id);
+    return this.userModel.update({ id }, user);
   }
-
   async remove(id: string): Promise<void> {
-    await this.userRepository.remove(id);
+    await this.findOne(id);
+    return this.userModel.delete(id);
   }
 }

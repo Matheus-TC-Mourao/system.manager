@@ -1,11 +1,23 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { UserRepository } from './user.repository';
+import { DynamooseModule } from 'nestjs-dynamoose';
+import { UserSchema } from './schemas/user.schema';
 
 @Module({
+  imports: [
+    DynamooseModule.forFeature([
+      {
+        name: 'User',
+        schema: UserSchema,
+        options: {
+          tableName: process.env.DYNAMODB_TABLE_USER,
+        },
+      },
+    ]),
+  ],
   controllers: [UserController],
-  providers: [UserService, UserRepository],
+  providers: [UserService],
   exports: [UserService],
 })
 export class UserModule {}

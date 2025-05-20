@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export enum UserType {
   OWNER = 'owner',
@@ -6,18 +6,15 @@ export enum UserType {
 }
 
 export class CreateUserDto {
+  @IsNotEmpty()
   @IsString()
-  readonly name: string;
+  name: string;
 
+  @IsNotEmpty()
   @IsEmail()
-  readonly email: string;
+  email: string;
 
+  @IsNotEmpty()
   @IsEnum(UserType)
-  readonly type: UserType;
-
-  @IsDate()
-  readonly createdAt: Date;
-
-  @IsDate()
-  readonly updatedAt: Date;
+  type: UserType;
 }

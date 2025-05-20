@@ -1,4 +1,4 @@
-import { IsDate, IsInt, IsUUID, Min } from 'class-validator';
+import { IsInt, IsUUID, Min } from 'class-validator';
 
 export class CreateEstablishmentRuleDto {
   @IsUUID()
@@ -11,10 +11,4 @@ export class CreateEstablishmentRuleDto {
   @IsInt()
   @Min(0)
   readonly videoLimit: number;
-
-  @IsDate()
-  readonly createdAt?: Date;
-
-  @IsDate()
-  readonly updatedAt?: Date;
 }

@@ -1,6 +1,5 @@
 import * as dynamoose from 'dynamoose';
 import { v4 as uuidv4 } from 'uuid';
-import { EstablishmentRules } from '../entities/establishment-rule.entity';
 
 export const EstablishmentRulesSchema = new dynamoose.Schema(
   {
@@ -12,9 +11,4 @@ export const EstablishmentRulesSchema = new dynamoose.Schema(
   {
     timestamps: true,
   },
-);
-
-export const EstablishmentRulesModel = dynamoose.model<EstablishmentRules>(
-  process.env.DYNAMODB_TABLE_ESTABLISHMENT_RULES!,
-  EstablishmentRulesSchema,
 );

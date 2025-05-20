@@ -1,29 +1,30 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEstablishmentRuleDto } from './dto/create-establishment-rule.dto';
-import { UpdateEstablishmentRuleDto } from './dto/update-establishment-rule.dto';
-import { EstablishmentRulesRepository } from './establishment-rules.repository';
-import { EstablishmentService } from 'src/establishment/establishment.service';
 import { EstablishmentRules } from './entities/establishment-rule.entity';
+import { InjectModel } from 'nestjs-dynamoose';
+import { ModelType } from 'dynamoose/dist/General';
+import { EstablishmentService } from 'src/establishment/establishment.service';
+import { NotFoundException } from '@nestjs/common';
+import { UpdateEstablishmentRuleDto } from './dto/update-establishment-rule.dto';
 
-@Injectable()
 export class EstablishmentRulesService {
   constructor(
-    private readonly repository: EstablishmentRulesRepository,
+    @InjectModel('EstablishmentRules')
+    private Model: ModelType<EstablishmentRules>,
     private readonly establishmentService: EstablishmentService,
   ) {}
 
-  async create(dto: CreateEstablishmentRuleDto): Promise<EstablishmentRules> {
-    await this.establishmentService.findOne(dto.establishmentId);
-    return this.repository.create(dto);
+  async create(rules: CreateEstablishmentRuleDto): Promise<EstablishmentRules> {
+    await this.establishmentService.findOne(rules.establishmentId);
+    return this.Model.create(rules);
   }
 
-  async findByEstablishmentId(
+  async findByEstablishment(
     establishmentId: string,
   ): Promise<EstablishmentRules[]> {
-    const rulesList =
-      await this.repository.findByEstablishment(establishmentId);
-    const rule = rulesList[0];
-    if (!rule) {
+    const rulesList = await this.Model.scan('establishmentId')
+      .eq(establishmentId)
+      .exec();
+    if (rulesList.length === 0) {
       throw new NotFoundException(
         `Regras não encontradas para ${establishmentId}`,
       );
@@ -31,22 +32,25 @@ export class EstablishmentRulesService {
     return rulesList;
   }
 
-  async update(
-    id: string,
-    updateEstablishmentRuleDto: UpdateEstablishmentRuleDto,
-  ): Promise<EstablishmentRules> {
-    const existing = await this.repository.findOne(id);
+  async findOne(id: string): Promise<EstablishmentRules> {
+    const existing = await this.Model.get(id);
     if (!existing) {
       throw new NotFoundException(`Regras ${id} não encontradas`);
     }
-    const updated = {
-      ...existing,
-      ...updateEstablishmentRuleDto,
-    } as EstablishmentRules;
-    return this.repository.update(updated);
+    return existing;
+  }
+
+  async update(
+    id: string,
+    rules: UpdateEstablishmentRuleDto,
+  ): Promise<EstablishmentRules> {
+    await this.findOne(id);
+
+    return this.Model.update({ id }, rules);
   }
 
   async remove(id: string): Promise<void> {
-    await this.repository.remove(id);
+    await this.findOne(id);
+    return this.Model.delete(id);
   }
 }

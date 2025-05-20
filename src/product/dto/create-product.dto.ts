@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString, IsUUID } from 'class-validator';
+import { IsNumber, IsString, IsUUID } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -9,10 +9,4 @@ export class CreateProductDto {
 
   @IsUUID()
   readonly establishmentId: string;
-
-  @IsDate()
-  readonly createdAt?: Date;
-
-  @IsDate()
-  readonly updatedAt?: Date;
 }

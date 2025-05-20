@@ -1,7 +1,6 @@
 import * as dynamoose from 'dynamoose';
 import { v4 as uuidv4 } from 'uuid';
 import { EstablishmentType } from '../dto/create-establishment.dto';
-import { Establishment } from '../entities/establishment.entity';
 
 export const EstablishmentSchema = new dynamoose.Schema(
   {
@@ -12,12 +11,11 @@ export const EstablishmentSchema = new dynamoose.Schema(
     },
     name: { type: String, required: true },
     ownerId: { type: String, required: true },
-    type: { type: String, enum: [EstablishmentType], required: true },
+    type: {
+      type: String,
+      enum: Object.values(EstablishmentType),
+      required: true,
+    },
   },
   { timestamps: true },
-);
-
-export const EstablishmentModel = dynamoose.model<Establishment>(
-  process.env.DYNAMODB_TABLE_ESTABLISHMENT!,
-  EstablishmentSchema,
 );

@@ -9,37 +9,38 @@ import {
 } from '@nestjs/common';
 import { EstablishmentRulesService } from './establishment-rules.service';
 import { CreateEstablishmentRuleDto } from './dto/create-establishment-rule.dto';
+// import { UpdateEstablishmentRuleDto } from './dto/update-establishment-rule.dto';
+import { EstablishmentRules } from './entities/establishment-rule.entity';
 import { UpdateEstablishmentRuleDto } from './dto/update-establishment-rule.dto';
 
 @Controller('establishment-rules')
 export class EstablishmentRulesController {
-  constructor(
-    private readonly establishmentRulesService: EstablishmentRulesService,
-  ) {}
+  constructor(private readonly rulesService: EstablishmentRulesService) {}
 
   @Post()
-  create(@Body() createEstablishmentRuleDto: CreateEstablishmentRuleDto) {
-    return this.establishmentRulesService.create(createEstablishmentRuleDto);
+  async create(
+    @Body() createEstablishmentRuleDto: CreateEstablishmentRuleDto,
+  ): Promise<EstablishmentRules> {
+    return await this.rulesService.create(createEstablishmentRuleDto);
   }
 
   @Get(':id')
-  findByEstablishmentId(@Param('id') id: string) {
-    return this.establishmentRulesService.findByEstablishmentId(id);
+  async findByEstablishmentId(
+    @Param('id') id: string,
+  ): Promise<EstablishmentRules[]> {
+    return await this.rulesService.findByEstablishment(id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateEstablishmentRuleDto: UpdateEstablishmentRuleDto,
-  ) {
-    return this.establishmentRulesService.update(
-      id,
-      updateEstablishmentRuleDto,
-    );
+  ): Promise<EstablishmentRules> {
+    return await this.rulesService.update(id, updateEstablishmentRuleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.establishmentRulesService.remove(id);
+  async remove(@Param('id') id: string): Promise<void> {
+    return await this.rulesService.remove(id);
   }
 }

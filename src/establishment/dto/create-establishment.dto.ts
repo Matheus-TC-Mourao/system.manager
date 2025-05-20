@@ -1,4 +1,4 @@
-import { IsDate, IsEnum, IsString, IsUUID } from 'class-validator';
+import { IsEnum, IsString, IsUUID } from 'class-validator';
 
 export enum EstablishmentType {
   SHOPPING = 'shopping',
@@ -14,10 +14,4 @@ export class CreateEstablishmentDto {
 
   @IsEnum(EstablishmentType)
   readonly type: EstablishmentType;
-
-  @IsDate()
-  readonly createdAt?: Date;
-
-  @IsDate()
-  readonly updatedAt?: Date;
 }

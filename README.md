@@ -1,98 +1,89 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Sistema de Gerenciamento
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Esta API RESTful foi desenvolvida em **NestJS** para gerenciar usuários, estabelecimentos, produtos e regras de negócio associadas, com persistência em **DynamoDB** por meio do ORM **Dynamoose**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A escolha do NestJS foi motivada por sua arquitetura modular, injeção de dependências e escalabilidade, garantindo uma estrutura limpa e de fácil manutenção.
 
-## Description
+## Tecnologias e Boas Práticas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NestJS** (TypeScript): framework que promove organização de código e padrões de projeto.
+- **DynamoDB + Dynamoose**: armazenamento NoSQL na AWS com modelagem de esquemas simplificada.
+- **UUID**: geração de identificadores únicos para todos os registros, garantindo integridade e segurança.
+- **class-validator**: validação dos DTOs através de decoradores.
+- **Princípios SOLID** e **Clean Code**: para manter o projeto escalável e de fácil evolução.
 
-## Project setup
+## Pré‑requisitos
+
+* Node.js ≥ 16.x
+* Conta AWS ou DynamoDB local em execução
+* Variáveis em `.env`:
+
+  * `AWS_REGION`
+  * `AWS_ACCESS_KEY_ID`
+  * `AWS_SECRET_ACCESS_KEY`
+
+## Instalação & Execução
 
 ```bash
-$ npm install
+git clone https://github.com/Matheus-TC-Mourao/system.manager.git
+cd system.manager
+npm install
+npm run start:dev
 ```
 
-## Compile and run the project
+## Quatro Módulos Principais
 
-```bash
-# development
-$ npm run start
+1. **User**
+2. **Establishment**
+3. **Product**
+4. **EstablishmentRules**
 
-# watch mode
-$ npm run start:dev
+Cada módulo possui suas entidades, DTOs, repositório, serviço e controller.
 
-# production mode
-$ npm run start:prod
-```
+## Rotas da API
 
-## Run tests
+### User
 
-```bash
-# unit tests
-$ npm run test
+| Método | Rota         | Descrição         | Exemplo Body                                        |
+| ------ | ------------ | ----------------- | --------------------------------------------------- |
+| POST   | `/user`     | Criar usuário     | `{"name": "User","email": "user.email@example.com","type": "owner"}` |
+| GET    | `/user/:id` | Buscar por ID     | —                                                   |
+| GET    | `/user`     | Listar todos      | —                                                   |
+| PATCH    | `/user/:id` | Atualizar usuário | `{ "name": "Maria" }`                               |
+| DELETE | `/user/:id` | Remover usuário   | —                                                   |
 
-# e2e tests
-$ npm run test:e2e
+### Establishment
 
-# test coverage
-$ npm run test:cov
-```
+| Método | Rota                         | Descrição                 | Exemplo Body                                                     |
+| ------ | ---------------------------- | ------------------------- | ---------------------------------------------------------------- |
+| POST   | `/establishment`            | Criar estabelecimento     | `{ "name": "Loja X", "ownerId": "uuid-owner", "type": "local" }` |
+| GET    | `/establishments`            | Listar todos              | —                                                                |
+| GET    | `/establishment/:id`        | Buscar por ID             | —                                                                |
+| GET    | `/establishment/type/:type` | Filtrar por tipo          | —                                                                |
+| PATCH    | `/establishment/:id`        | Atualizar estabelecimento | `{ "name": "Loja Y" }`                                           |
+| DELETE | `/establishments/:id`        | Remover estabelecimento   | —                                                                |
 
-## Deployment
+### Product
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+| Método | Rota            | Descrição         | Exemplo Body                                                                       |
+| ------ | --------------- | ----------------- | ---------------------------------------------------------------------------------- |
+| POST   | `/product`     | Criar produto     | `{ "name": "Produto A", "price": 99.90, "establishmentId": "uuid-establishment" }` |
+| GET    | `/product`     | Listar todos      | —                                                                                  |
+| GET    | `/product/:id` | Buscar por ID     | —                                                                                  |
+| PATCH    | `/product/:id` | Atualizar produto | `{ "price": 119.90 }`                                                              |
+| DELETE | `/product/:id` | Remover produto   | —                                                                                  |
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### EstablishmentRules
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+| Método | Rota                                                     | Descrição                         | Exemplo Body                                                                        |
+| ------ | -------------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------- |
+| POST   | `/establishment-rules`                                   | Criar regras                      | `{ "establishmentId": "uuid-establishment", "picturesLimit": 10, "videoLimit": 5 }` |
+| GET    | `/establishment-rules/by-establishment/:establishmentId` | Buscar regras por estabelecimento | —                                                                                   |
+| PATCH    | `/establishment-rules/:id`                               | Atualizar regras                  | `{ "picturesLimit": 20 }`                                                           |
+| DELETE | `/establishment-rules/:id`                               | Remover regras                    | —                                                                                   |
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
+## Licença
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT License © Matheus-TC-Mourao
